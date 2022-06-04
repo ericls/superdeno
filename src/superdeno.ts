@@ -81,9 +81,9 @@ export function superdeno(
   if (!isString(app) && !isListener(app) && !isServer(app)) {
     managedServer = new Server({
       port: 0,
-      async handler(request) {
+      async handler(req, conn) {
         try {
-          return await app(request);
+          return await app(req, { ...conn, rid: 0 });
         } catch (error) {
           console.error(
             "SuperDeno experienced an unexpected server error with the underlying app handler.",

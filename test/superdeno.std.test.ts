@@ -1,6 +1,7 @@
-import { Server } from "../deps.ts";
+import { assertEquals, Server } from "../deps.ts";
 import { describe, it } from "./utils.ts";
 import { superdeno } from "../mod.ts";
+import { ConnLike } from "../src/types.ts";
 
 describe("std: superdeno", () => {
   it("std: superdeno(server): should support `superdeno(server)`", async () => {
@@ -14,6 +15,19 @@ describe("std: superdeno", () => {
     await superdeno(server)
       .get("/")
       .expect("hello");
+  });
+
+  it("std: superdeno(server): should support `superdeno(server.Handler)`", async () => {
+    let expectedConnInfo: ConnLike | undefined = undefined;
+    function handler(_req: Request, connInfo?: ConnLike) {
+      expectedConnInfo = connInfo;
+      return new Response("hello");
+    }
+
+    await superdeno(handler)
+      .get("/")
+      .expect("hello");
+    assertEquals(Boolean(expectedConnInfo), true);
   });
 
   it("std: superdeno(url): should support `superdeno(url)`", async () => {

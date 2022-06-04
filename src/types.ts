@@ -1,8 +1,14 @@
 // deno-lint-ignore-file no-explicit-any
 
+export interface ConnLike extends Partial<Deno.Conn> {
+  readonly localAddr: Deno.Addr;
+  readonly remoteAddr: Deno.Addr;
+}
+
 export interface RequestHandlerLike {
   (
     req: any,
+    connLike?: ConnLike,
   ): Promise<any> | Promise<void> | any | void;
 }
 
